@@ -1,0 +1,46 @@
+{
+  "name": "react-redux-firebase-boilerplate",
+  "description": "React, Redux and Google Firebase boilerplate.",
+  "author": {
+    "name": "Jared Williams",
+    "email": "accounts@jaredwilliams.com.au"
+  },
+  "repository": {
+    "url": "https://github.com/imagitama/react-redux-firebase-boilerplate",
+    "type": "git"
+  },
+  "homepage": "https://github.com/imagitama/react-redux-firebase-boilerplate",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "precommit": "pretty-quick --staged",
+    "prettier": "prettier --write src/**/*.{js,jsx}"
+  },
+  "devDependencies": {
+    "prettier": "1.17.1",
+    "react-scripts": "2.1.8"
+  },
+  "dependencies": {
+    "@redux-beacon/google-tag-manager": "^1.0.1",
+    "connected-react-router": "4.5.0",
+    "firebase": "^6.1.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-firebaseui": "^3.1.2",
+    "react-redux": "5.1.1",
+    "react-redux-firebase": "^3.0.0-alpha.12",
+    "react-router": "4.4.0-beta.8",
+    "react-router-dom": "4.4.0-beta.8",
+    "redux": "4.0.1",
+    "redux-beacon": "^2.1.0",
+    "redux-thunk": "2.3.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
