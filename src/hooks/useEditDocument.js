@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 
-export default (collectionName, documentId = null) => {
+export default (collectionName, documentId) => {
   const [isSaving, setIsSaving] = useState(false)
   const [isSuccess, setIsSuccess] = useState(null)
 
@@ -10,13 +10,11 @@ export default (collectionName, documentId = null) => {
     setIsSaving(true)
 
     try {
-      const collection = firebase.firestore().collection(collectionName)
-
-      if (documentId) {
-        await collection.doc(documentId).set(fields, { merge: true })
-      } else {
-        await collection.add(fields)
-      }
+      await firebase
+        .firestore()
+        .collection(collectionName)
+        .doc(documentId)
+        .set(fields, { merge: true })
 
       setIsSuccess(true)
       setIsSaving(false)

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import firebase from 'firebase'
+import { useState, useEffect, useRef } from 'react'
+import { firestore } from 'firebase/app'
 
 const secondsToDate = seconds => {
   const t = new Date(1970, 0, 1) // Epoch
@@ -33,7 +33,7 @@ const mapReferences = async doc => {
 
   const results = await Promise.all(
     Object.entries(newDoc).map(async ([key, value]) => {
-      if (value && value instanceof firebase.firestore.DocumentReference) {
+      if (value && value instanceof firestore.DocumentReference) {
         return [key, await getDataFromReference(value)]
       }
       return [key, await Promise.resolve(value)]
@@ -45,49 +45,28 @@ const mapReferences = async doc => {
   return newDoc
 }
 
-export default (collectionName, documentId = null, searchTerm = '') => {
+export default (collectionName, fieldName, operator, value, useRefs = true) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isErrored, setIsErrored] = useState(false)
-  const [results, setResults] = useState(documentId ? null : [])
+  const [results, setResults] = useState([])
+  const timer = useRef()
 
   const getData = async () => {
     setIsLoading(true)
 
     try {
-      const collection = firebase.firestore().collection(collectionName)
+      const collection = firestore().collection(collectionName)
 
-      let query
-
-      if (documentId) {
-        const doc = await collection.doc(documentId).get()
-        const data = await doc.data()
-
-        const mappedDoc = await mapReferences(
-          mapDates({
-            ...data,
-            id: data.id
-          })
-        )
-
-        setIsLoading(false)
-        setResults(mappedDoc)
-        return
-      }
-
-      if (searchTerm) {
-        query = await collection
-          .where('keywords', 'array-contains', searchTerm)
-          .get()
-      } else {
-        query = await collection.get()
-      }
+      const query = await collection.where(fieldName, operator, value).get()
 
       setIsLoading(false)
 
       const docs = query.docs
         .map(doc => ({ ...doc.data(), id: doc.id }))
         .map(mapDates)
-      const docsWithReferences = await Promise.all(docs.map(mapReferences))
+      const docsWithReferences = useRefs
+        ? await Promise.all(docs.map(mapReferences))
+        : docs
 
       setResults(docsWithReferences)
     } catch (err) {
@@ -98,8 +77,12 @@ export default (collectionName, documentId = null, searchTerm = '') => {
   }
 
   useEffect(() => {
-    getData()
-  }, [searchTerm])
+    if (timer.current) {
+      clearTimeout(timer.current)
+    }
+
+    timer.current = setTimeout(() => getData(), 500)
+  }, [value])
 
   return [isLoading, isErrored, results]
 }

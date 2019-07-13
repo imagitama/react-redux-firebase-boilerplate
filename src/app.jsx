@@ -13,6 +13,7 @@ const App = () => (
         <Route exact path={routes.login} component={containers.login} />
         <Route exact path={routes.logout} component={containers.logout} />
         <Route exact path={routes.myAccount} component={containers.myAccount} />
+        <Route exact path={routes.admin} component={containers.admin} />
         <Route exact path={routes.home} component={containers.home} />
       </Switch>
     </main>

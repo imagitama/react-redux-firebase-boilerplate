@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import LoadingIndicator from '../components/loading'
-import useDatabase from '../hooks/useDatabase'
+import useViewDocument from '../hooks/useViewDocument'
 
 const mapStateToProps = ({ firebase: { auth } }) => ({ auth })
 
@@ -20,7 +20,7 @@ export default (Component, whichFlagName) =>
       return 'Not logged in (should wrap this component in redirect on not auth HOC)'
     }
 
-    const [isLoading, isErrored, user] = useDatabase('users', auth.uid)
+    const [isLoading, isErrored, user] = useViewDocument('users', auth.uid)
 
     if (isLoading) {
       return <LoadingIndicator />
