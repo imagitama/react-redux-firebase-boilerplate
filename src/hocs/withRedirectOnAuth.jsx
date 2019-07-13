@@ -13,8 +13,13 @@ export default Component =>
     mapStateToProps,
     mapDispatchToProps
   )(
-    withRouter(({ auth, push }) => {
+    withRouter(({ auth, push, ...otherProps }) => {
       useEffect(() => {
+        // On fresh load of a page we wait until firebase gets back to us
+        if (!auth.isLoaded) {
+          return
+        }
+
         if (auth.uid) {
           push(routes.home)
         }
@@ -24,6 +29,6 @@ export default Component =>
         return null
       }
 
-      return <Component />
+      return <Component {...otherProps} />
     })
   )
